@@ -101,86 +101,61 @@ client.on('message', message => {
 
 
 
-client.on('message', message => {
- var prefix = "^"
-    if(message.content.startsWith(prefix + 'new')) {
-        let args = message.content.split(' ').slice(1).join(' ');
-        let support = message.guild.roles.find("name","Support Team");
-        let ticketsStation = message.guild.channels.find("name", "TICKETS");
-        if(!args) {
-            return message.channel.send('الرجاء كتابة سبب التذكرة');
-        };
-                if(!support) {
-                    return message.channel.send('**Please make sure that `Support Team` role exists and it\'s not duplicated.**');
-                };
-            if(!ticketsStation) {
-                message.guild.createChannel("Ticket", "category");
-            };
-                message.guild.createChannel(`𝑻𝑰𝑪𝑲𝑬𝑻`, "text").then(ticket => {
-                    message.delete()
-                        message.channel.send(`تم انشاء تذكرتك. [ ${ticket} ]`);
-                    ticket.setParent(ticketsStation);
-                    ticketsStation.setPosition(1);
-                        ticket.overwritePermissions(message.guild.id, {
-                            SEND_MESSAGES: false,
-                            READ_MESSAGES: false
-                        });
-                            ticket.overwritePermissions(support.id, {
-                                SEND_MESSAGES: true,
-                                READ_MESSAGES: true
-                            });
-                                ticket.overwritePermissions(message.author.id, {
-                                    SEND_MESSAGES: true,
-                                    READ_MESSAGES: true
-                                });
-                    let embed = new Discord.RichEmbed()
-                                .setTitle('**تذكرة جديدة.**')
-                                .setColor("RANDOM")
-                                .setThumbnail(`${message.author.avatarURL}`)
-                                .addField('سبب التذكرة', args)
-                                .addField('صاحب التذكرة', message.author)
-                                .addField('الروم', `<#${message.channel.id}>`);
-
-                                ticket.sendEmbed(embed);
-                }) .catch();
+client.on("message", (message) => {
+    /// DREAM
+   if (message.content.startsWith("^new")) {     /// DREAM
+        const reason = message.content.split(" ").slice(1).join(" ");     /// DREAM
+        if (!message.guild.roles.exists("name", "Support Team")) return message.channel.send(`لازم تسوي رتبة اسمها \`Support Team\` وتنطي البوت ادمنيتر حتا يقدر يسوي الرومات ويعدل برمشنات`);
+        if (message.guild.channels.exists("name", "ticket-{message.author.id}" + message.author.id)) return message.channel.send(`You already have a ticket open.`);    /// ALPHA CODES
+        message.guild.createChannel(`ticket-${message.author.username}`, "text").then(c => {
+            let role = message.guild.roles.find("name", "Support Team");
+            let role2 = message.guild.roles.find("name", "@everyone");
+            c.overwritePermissions(role, {
+                SEND_MESSAGES: true,
+                READ_MESSAGES: true
+            });    /// ALPHA CODES
+            c.overwritePermissions(role2, {
+                SEND_MESSAGES: false,
+                READ_MESSAGES: false
+            });
+            c.overwritePermissions(message.author, {
+                SEND_MESSAGES: true,
+                READ_MESSAGES: true
+            });
+            message.channel.send(`:white_check_mark: تم انشاء تذكرتك, #${c.name}.`);
+            const embed = new Discord.RichEmbed()
+                .setColor(0xCF40FA)
+                .addField(`Hey ${message.author.username}!`, `تم فتح تذكرة الرجاء انتظار الى حين يأتي مشرف ويقوم بلرد عليك`)
+                .setTimestamp();
+            c.send({
+                embed: embed
+            });
+        }).catch(console.error);
     }
-    if(message.content.startsWith(prefix + 'close')) {
-            if(!message.member.hasPermission("ADMINISTRATOR")) return;
-        if(!message.channel.name.startsWith("𝑻𝑰𝑪𝑲𝑬𝑻")) {
-            return;
-        };  
-                let embed = new Discord.RichEmbed()
-                    .setAuthor("هل تريد فعلآ اغلاق التذكرة ؟.")
-                    .setColor("RANDOM");
-                    message.channel.sendEmbed(embed) .then(codes => {
-
-                    
-                        const filter = msg => msg.content.startsWith(prefix + 'close');
-                        message.channel.awaitMessages(response => response.content === prefix + 'close', {
-                            max: 1,
-                            time: 20000,
-                            errors: ['time']
-                        })
-                        .then((collect) => {
-                            message.channel.delete();
-                        }) .catch(() => {
-                            codes.delete()
-                                .then(message.channel.send('**Operation has been cancelled.**')) .then((c) => {
-                                    c.delete(4000);
-                                })
-                                    
-                            
-                        })
-
-
-                    })
-
-
-            
-    }
+ 
+ 
+  if (message.content.startsWith("$close")) {
+        if (!message.channel.name.startsWith(`ticket-`)) return message.channel.send(`You can't use the close command outside of a ticket channel.`);
+ 
+       message.channel.send(`هل انت متأكد من اقفالك للتذكرة اذا متأكد اكتب $confirm`)
+           .then((m) => {
+               message.channel.awaitMessages(response => response.content === '$confirm', {
+                       max: 1,
+                       time: 10000,
+                       errors: ['time'],
+                   })    /// DREAM
+                   .then((collected) => {
+                       message.channel.delete();
+                   })    /// DREAM
+                   .catch(() => {
+                       m.edit('Ticket close timed out, the ticket was not closed.').then(m2 => {
+                           m2.delete();
+                       }, 3000);
+                   });
+           });
+   }
+ 
 });
-
-
 
 
 
