@@ -99,7 +99,7 @@ client.on('message', async msg => {
 	let command = msg.content.toLowerCase().split(" ")[0];
 	command = command.slice(prefix.length)
 
-	if (command === `شغل ياورع`) {
+	if (command === `!شغل`) {
 		const voiceChannel = msg.member.voiceChannel;
         
         if (!voiceChannel) return msg.channel.send("انت لم تدخل روم صوتي");
@@ -317,9 +317,7 @@ client.on('message', message => {
         let helpEmbed = new Discord.RichEmbed()
         .setTitle('**أوامر الميوزك...**')
         .setDescription('**برفكس البوت (!)**')
-        .addField('شغل ياورع', 'لتشغيل اغنية')
-        .addField('تعال', 'دخول رومك الصوتي')
-        .addField('اطلع', 'الخروج من رومك الصوتي')
+        .addField('شغل', 'لتشغيل اغنية')
         .addField('سكب', 'تخطي الأغنية')
         .addField('pause', 'ايقاف الاغنية مؤقتا')
         .addField('resume', 'تكملة الاغنية')
@@ -349,7 +347,7 @@ client.on('ready', () => {
       console.log(`ON ${client.guilds.size} Servers '     Script By : EX Clan ' `);
     console.log(`----------------`);
   console.log(`Logged in as ${client.user.tag}!`);
-client.user.setGame(`1play | Last Music`,"http://twitch.tv/Death Shop")
+client.user.setGame(` !شغل | Last Music`,"http://twitch.tv/Death Shop")
 client.user.setStatus("dnd")
 });
 
