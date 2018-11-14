@@ -20,7 +20,7 @@ const gif = require("gif-search");
 
 const client = new Discord.Client({disableEveryone: true});
 
-const prefix = "!";
+const prefix = "$";
 /////////////////////////
 ////////////////////////
 
@@ -99,7 +99,7 @@ client.on('message', async msg => {
 	let command = msg.content.toLowerCase().split(" ")[0];
 	command = command.slice(prefix.length)
 
-	if (command === `!شغل`) {
+	if (command === `شغل`) {
 		const voiceChannel = msg.member.voiceChannel;
         
         if (!voiceChannel) return msg.channel.send("انت لم تدخل روم صوتي");
@@ -196,7 +196,7 @@ client.on('message', async msg => {
 		serverQueue.connection.dispatcher.end('تم ايقاف الاغنية لقد خرجت من الروم الصوتي');
         return undefined;
         
-	} else if (command === `!صوت`) {
+	} else if (command === `صوت`) {
 
 		if (!msg.member.voiceChannel) return msg.channel.send("يجب ان تكون في روم صوتي");
 		if (!serverQueue) return msg.channel.send('يعمل الامر فقط عند تشغيل مقطع صوتي');
@@ -207,14 +207,14 @@ client.on('message', async msg => {
         
         return msg.channel.send(`درجة الصوت الان**${args[1]}**`);
 
-	} else if (command === `!np`) {
+	} else if (command === `np`) {
 
 		if (!serverQueue) return msg.channel.send('There is no Queue!');
 		const embedNP = new Discord.RichEmbed()
 	    .setDescription(`Now playing **${serverQueue.songs[0].title}**`)
         return msg.channel.sendEmbed(embedNP);
         
-	} else if (command === `!queue`) {
+	} else if (command === `queue`) {
 		
 		if (!serverQueue) return msg.channel.send('There is no Queue!!');
 		let index = 0;
@@ -226,7 +226,7 @@ client.on('message', async msg => {
 **Now playing :** **${serverQueue.songs[0].title}**`)
         .setColor("#f7abab")
 		return msg.channel.sendEmbed(embedqu);
-	} else if (command === `!pause`) {
+	} else if (command === `pause`) {
 		if (serverQueue && serverQueue.playing) {
 			serverQueue.playing = false;
 			serverQueue.connection.dispatcher.pause();
@@ -313,7 +313,7 @@ function play(guild, song) {
 
 
 client.on('message', message => {
-    if (message.content === 'help') {
+    if (message.content === '!help') {
         let helpEmbed = new Discord.RichEmbed()
         .setTitle('**أوامر الميوزك...**')
         .setDescription('**برفكس البوت (!)**')
@@ -339,6 +339,169 @@ client.on('message', message => {
       message.channel.send(helpEmbed);
     }
 });
+
+
+
+
+client.on('message' , message => {
+if(message.content === '!help') {
+  var EsTeKnAN = new Discord.RichEmbed()
+  .setColor('RANDOM')
+message.author.send(`
+***__وصف عن البوت__***
+**
+─════════════ {✯اوامر البوت✯} ════════════─
+❧ !bot ➺ معلومات البوت
+❧ !bc ➺ برودكاست ب امبيد وبدون
+❧ !Link ➺ رابط انفايت للسيرفر
+❧ !clear ➺ مسح الشات
+❧ !server ➺ لعرض معلومات السيرفر
+❧ !marry ➺ لعبة الزواج
+❧ !kf ➺ لعبة كف
+❧ !mc ➺ قفل الشات
+❧ !new ➺ لانشاء تذكرة
+─════════════ {✯ By Dream ✯} ════════════─
+**
+`);
+}
+})
+
+
+
+
+
+
+
+
+
+client.on('message', message => {
+    if (message.content === "!bot") { // البريفكس و الامر
+           if(!message.channel.guild) return message.reply('** This command only for servers **');
+    let embed = new Discord.RichEmbed()
+ .setColor('RANDOM')
+ .addField("**اسم السيرفر**", message.guild.name)
+ .addField("**عدد السيرفرات الي فيها البوت:**" , client.guilds.size)
+ .addField("**المستخدمين:**", client.users.size)
+ .addField("**قنوات:**", client.channels.size)
+message.channel.sendEmbed(embed);
+   }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ client.on('message', message => {
+      if(message.content.startsWith ("!marry")) {
+      if(!message.channel.guild) return message.reply('** This command only for servers **')
+      var proposed = message.mentions.members.first()
+     
+      if(!message.mentions.members.first()) return message.reply(' ?? **لازم تطلب ايد وحدة**').catch(console.error);
+      if(message.mentions.users.size > 1) return message.reply(' ?? **ولد ما يصحلك الا حرمة وحدة كل مرة**').catch(console.error);
+       if(proposed === message.author) return message.reply(`**خنثى ؟ **`);
+        if(proposed === client.user) return message.reply(`** تبي تتزوجني؟ **`);
+              message.channel.send(`**${proposed} 
+ بدك تقبلي عرض الزواج من ${message.author} 
+ العرض لمدة 15 ثانية  
+ اكتبي موافقة او لا**`)
+
+const filter = m => m.content.startsWith("موافقة");
+message.channel.awaitMessages(filter, { max: 1, time: 15000, errors: ['time'] })
+.then(collected =>{ 
+    message.channel.send(` **${message.author} و ${proposed} الف الف مبروك الله , يرزقكم الذرية الصالحة** `);
+})
+
+   const filte = m => m.content.startsWith("لا");
+message.channel.awaitMessages(filte, { max: 1, time: 15000, errors: ['time'] })
+.then(collected =>{ 
+   message.channel.send(`  **${message.author} تم رفض عرضك** `);
+})
+        
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+client.on('guildMemberAdd', member => {
+    let channel = member.guild.channels.find('name', 'invite-checker'); // اسم الروم عشان يجي فيه الترحيب
+    let memberavatar = member.user.avatarURL
+      if (!channel) return; 
+    let embed = new Discord.RichEmbed()
+        .setColor('RANDOM')
+        .setThumbnail(memberavatar)
+        .addField(':running_shirt_with_sash: | name :  ',`${member}`)
+        .addField(':loudspeaker: | نورت السيرفر ي قلبي' , `Welcome to the server, ${member}`)
+        .addField(':id: | user :', "**[" + `${member.id}` + "]**" )
+                .addField('➡| انت العضو رقم',`${member.guild.memberCount}`)
+               
+                  .addField("Name:",`<@` + `${member.id}` + `>`, true)
+                      
+                                     .addField(' الـسيرفر', `${member.guild.name}`,true)
+                                       
+     .setFooter("**SERVER NAME **")
+        .setTimestamp()
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+client.on('message', message => {
+            if (message.content.startsWith("$@#!!rules")) {
+     let embed = new Discord.RichEmbed()
+.setThumbnail(message.author.avatarURL)
+.addField('     **اولا** ' ,' **الادارة غير مسؤولة عن اي عملية نصب دون اخذ وسيط ** ')
+.addField('     **ثانيا** ' ,' **لا تسوي سبام ** ')
+.addField('     **ثالثا** ' ,' **لا تزعج الاخرين** ')
+.addField('    **رابعا**' ,' **ممنوع طلب رتب اذا تبي رتبه الرجاء الشراء الرتب في #جديدنا ** ')
+.addField('    **خامسا**' ,' **احترم الاخرين** ')
+.addField('    **سادسا**' ,' **لا تنشر في الشات او بل خاص** ')
+.addField('    **سابعا**' ,' **ممنوع الحسابات الوهميه!** ')
+.addField('    **ثامنا**' ,' **لا تسوي سبام ايموجي** ')
+.addField('    **تاسعا**' ,' **لو ماتسدد الديون حقتك راح تنطرد من السيلر وراح تكون من ضمن النصابين !** ')
+.addField('    **عآشرأ**' ,' **وشكرآ لك !** ')
+.setColor('#7d2dbe')
+  message.channel.sendEmbed(embed);
+    }
+});
+
+
+
+
+
+
+
+
+
+
 
 client.on('ready', () => {
    console.log(`----------------`);
